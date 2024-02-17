@@ -1,0 +1,35 @@
+#!/usr/bin/python3
+import subprocess
+import os
+import sys
+
+app_image_folder =  f"/home/{os.getlogin()}/Applicazioni"
+file_format = ".AppImage"
+print(app_image_folder)
+
+try:
+    files = os.listdir(app_image_folder)
+except(FileNotFoundError):
+    print(f"\"{app_image_folder}\" doesn't exist")
+
+if(len(sys.argv)>2):
+    print(f"Error, too many arguments with length {len(sys.argv)} :\nappimagerun {sys.argv}\n")
+    sys.exit(1)
+commands = []
+for filename in files:
+    if(filename.endswith(file_format)):
+        commands.append(filename[0:len(filename)-len(file_format)])
+if(sys.argv[1] == "--list" or sys.argv[1] == "-l"):
+    print("These are all the commands available: ")
+    for command in commands:
+        print(f"appimagerun {command.lower()}")       
+    
+elif(sys.argv[1] == "--help" or sys.argv[1] == "-h"):
+    print("run in the folder Applications the AppImage using the name without the format.\n appimagerun \nUsage:\n appimagerun [OPTION ...] COMMAND ")     
+    print("Builtin commands:\n -l,--list: List all the possible appimages comands\n-h,--help: help command")
+    
+else:
+    command = [c for c  in commands if(c.lower() == sys.argv[1])][0]
+    subprocess.run(f"{app_image_folder}/{command}{file_format}")
+
+    
